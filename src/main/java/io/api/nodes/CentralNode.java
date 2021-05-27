@@ -65,6 +65,81 @@ public class CentralNode {
         return Response.status(400).entity("The house does not exist").build();
 
     }
-    
+
+    @POST
+    @Path("/{id}/fridge")
+    public Response addFridge(@PathParam("id") Integer houseId, Fridge fridge) {
+        System.out.println(houseId);
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("Cannot create the fridge because the house does not exist").build();
+
+        }
+
+        House house = app.getHouse(houseId);
+        Logger.getLogger("API").log(Level.INFO, "Creation of a fridge");
+
+        // Test if a fridge with the same id exists
+        if (house.hasFridge(fridge.getId())) {
+            return Response.status(400).entity("A fridge with the same id exists").build();
+        }
+
+        house.getFridges().add(fridge);
+        return Response.status(201).entity(fridge).build();
+
+    }
+
+    @GET
+    @Path("/{id}/fridge")
+    public Response getFridges(@PathParam("id") Integer houseId) {
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+
+        return Response.status(201).entity(house.getFridges()).build();
+
+    }
+
+    @GET
+    @Path("/{id}/fridge/{f_id}")
+    public Response getFridge(@PathParam("id") Integer houseId,
+                              @PathParam("f_id") String fridgeId) {
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.equals(fridgeId)).findFirst().get();
+
+        return Response.status(201).entity(fridge).build();
+
+    }
+
+    @DELETE
+    @Path("/{id}/fridge/{f_id}")
+    public Response deleteFridge(@PathParam("id") Integer houseId,
+                                 @PathParam("f_id") String fridgeId) {
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        house.getFridges().remove(fridge);
+
+        return Response.status(201).entity(fridge).build();
+
+    }
+
 
 }
