@@ -114,7 +114,7 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.equals(fridgeId)).findFirst().get();
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
         return Response.status(201).entity(fridge).build();
 
