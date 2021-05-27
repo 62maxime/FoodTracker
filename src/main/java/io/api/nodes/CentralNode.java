@@ -49,7 +49,7 @@ public class CentralNode {
     @Path("/{id}")
     public Response getHouse(@PathParam("id") Integer houseId) {
         if (app.hasHouse(houseId)) {
-            House house = app.getHouses().get(houseId);
+            House house = app.getHouse(houseId);
             return Response.status(200).entity(house).build();
         }
         return Response.status(400).entity("The house does not exist").build();
@@ -59,7 +59,7 @@ public class CentralNode {
     @Path("/{id}")
     public Response deleteHouse(@PathParam("id") Integer houseId) {
         if (app.hasHouse(houseId)) {
-            House house = app.getHouses().remove(houseId);
+            House house = app.removeHouse(houseId);
             return Response.status(200).entity(house).build();
         }
         return Response.status(400).entity("The house does not exist").build();

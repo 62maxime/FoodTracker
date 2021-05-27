@@ -35,4 +35,15 @@ public class App {
         return houses.containsKey(id);
     }
 
+    public House getHouse(Integer id) {
+        return houses.get(id);
+    }
+
+    public House removeHouse(Integer houseId) {
+        return houses.remove(houseId);
+    }
+
+    public boolean hasHouse(House house) {
+        return houses.containsValue(house);
+    }
 }
