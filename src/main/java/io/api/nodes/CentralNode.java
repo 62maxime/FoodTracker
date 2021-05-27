@@ -88,7 +88,7 @@ public class CentralNode {
         fridge.setApiKey(apiKey);
 
         house.getFridges().add(fridge);
-        return Response.status(201).entity(fridge).build();
+        return Response.status(201).entity("{ \"apiKey\": \"" + apiKey + "\" }").build();
 
     }
 
@@ -101,7 +101,7 @@ public class CentralNode {
         }
         House house = app.getHouse(houseId);
 
-        return Response.status(201).entity(house.getFridges()).build();
+        return Response.status(200).entity(house.getFridges()).build();
 
     }
 
@@ -120,7 +120,7 @@ public class CentralNode {
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
-        return Response.status(201).entity(fridge).build();
+        return Response.status(200).entity(fridge).build();
 
     }
 
@@ -138,6 +138,7 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
+
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
         // Check that the APIKey is correct
@@ -147,7 +148,7 @@ public class CentralNode {
 
         house.getFridges().remove(fridge);
 
-        return Response.status(201).entity(fridge).build();
+        return Response.status(200).entity(fridge).build();
 
     }
 
@@ -245,7 +246,7 @@ public class CentralNode {
 
 
         Food food = fridge.getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
-        return Response.status(201).entity(food).build();
+        return Response.status(200).entity(food).build();
 
     }
 
@@ -280,7 +281,7 @@ public class CentralNode {
 
         fridge.getFood().remove(foodName);
 
-        return Response.status(201).entity(food).build();
+        return Response.status(200).entity(food).build();
 
     }
 
