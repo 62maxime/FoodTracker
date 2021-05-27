@@ -466,6 +466,26 @@ public class RestAPITest {
         assertEquals(400, res.getStatusLine().getStatusCode(), "The creation has failed");
     }
 
+    @Test
+    @Order(6)
+    @DisplayName("Deletion of not empty House")
+    public void deleteNotEmptyHouse()
+            throws IOException, ClassNotFoundException {
+        // Given
+        HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
+        delete.setHeader("Accept", "application/json");
+        delete.setHeader("Content-type", "application/json");
+        delete.setHeader("Authorization", "Basic " + basicAuth);
+
+        //Get http client
+        CloseableHttpClient httpClient = getCloseableHttpClient();
+
+        //Execute HTTP method
+        CloseableHttpResponse res = httpClient.execute(delete);
+
+        // check that the house is created
+        assertEquals(400, res.getStatusLine().getStatusCode(), "The deletion has failed");
+    }
 
     @Test
     @Order(8)

@@ -59,6 +59,10 @@ public class CentralNode {
     @Path("/{id}")
     public Response deleteHouse(@PathParam("id") Integer houseId) {
         if (app.hasHouse(houseId)) {
+            if (! app.getHouse(houseId).getFridges().isEmpty()) {
+                logger.info("The house is not empty");
+                return Response.status(400).entity("The house is not empty").build();
+            }
             House house = app.removeHouse(houseId);
             return Response.status(200).entity(house).build();
         }
