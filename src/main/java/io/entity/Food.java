@@ -1,13 +1,18 @@
 package io.entity;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.util.Date;
 
 public class Food implements Serializable {
 
-    private String name;
-    private int volume;
-    private Date expireDate;
+    @Expose
+    private final String name;
+    @Expose
+    private final int volume;
+    @Expose
+    private final Date expireDate;
 
     public Food() {
         this.name = "NA";

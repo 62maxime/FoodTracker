@@ -16,7 +16,7 @@ import java.lang.reflect.Type;
 @Provider
 public class GsonProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
 
-    private final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
 
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {

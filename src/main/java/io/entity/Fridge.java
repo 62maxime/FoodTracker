@@ -1,14 +1,20 @@
 package io.entity;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Fridge implements Serializable {
 
-    private String id;
-    private SensorState state;
-    private int maxVolume;
-    private List<Food> food;
+    @Expose
+    private final String id;
+    @Expose
+    private final SensorState state;
+    @Expose
+    private final int maxVolume;
+    private final List<Food> food;
 
     public Fridge() {
         this.id = "";

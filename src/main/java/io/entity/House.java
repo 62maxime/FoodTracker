@@ -1,14 +1,20 @@
 package io.entity;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class House implements Serializable {
 
     private int id;
-    private String address;
-    private String zip;
-    private List<Fridge> fridges;
+    @Expose
+    private final String address;
+    @Expose
+    private final String zip;
+    private final List<Fridge> fridges;
 
     public House(String address, String zip) {
         this.address = address;
@@ -54,5 +60,17 @@ public class House implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(address, zip);
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public int getId() {
+        return id;
     }
 }
