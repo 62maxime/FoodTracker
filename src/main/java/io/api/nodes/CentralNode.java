@@ -42,7 +42,7 @@ public class CentralNode {
     @GET
     @Path("/")
     public Response getHouses() {
-        return Response.status(201).entity(app.getHouses()).build();
+        return Response.status(200).entity(app.getHouses()).build();
     }
 
     @GET

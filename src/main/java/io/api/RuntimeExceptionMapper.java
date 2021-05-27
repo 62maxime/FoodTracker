@@ -9,6 +9,6 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
 
     @Override
     public Response toResponse(RuntimeException e) {
-        return Response.status(400).entity(e.getMessage()).type("plain/text").build();
+        return Response.status(404).entity("URL Not found").type("plain/text").build();
     }
 }
