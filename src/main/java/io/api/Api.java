@@ -23,6 +23,7 @@ public class Api extends Application {
         Set<Class<?>> sets = new HashSet<>(1);
         sets.add(GsonProvider.class);
         sets.add(RuntimeExceptionMapper.class);
+        sets.add(BasicAuth.class);
         return sets;
     }
 }

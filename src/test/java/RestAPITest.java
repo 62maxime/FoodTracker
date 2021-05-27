@@ -35,6 +35,7 @@ public class RestAPITest {
 
     public static String houseId = "NA";
     public static String apiKey = "NA";
+    public final static String basicAuth = "ZGVmYXVsdDpwYXNzd29yZA==";
 
     public static CloseableHttpClient getCloseableHttpClient() {
         CloseableHttpClient httpClient = null;
@@ -72,6 +73,7 @@ public class RestAPITest {
         post.setEntity(entity);
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
+        post.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -103,6 +105,7 @@ public class RestAPITest {
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId);
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -142,6 +145,7 @@ public class RestAPITest {
         post.setEntity(entity);
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
+        post.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -174,6 +178,7 @@ public class RestAPITest {
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
         get.setHeader("API-KEY", apiKey);
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -214,6 +219,7 @@ public class RestAPITest {
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
         post.setHeader("API-KEY", apiKey);
+        post.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -249,6 +255,7 @@ public class RestAPITest {
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
         get.setHeader("API-KEY", apiKey);
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -291,6 +298,7 @@ public class RestAPITest {
             post.setHeader("Accept", "application/json");
             post.setHeader("Content-type", "application/json");
             post.setHeader("API-KEY", apiKey);
+            post.setHeader("Authorization", "Basic " + basicAuth);
 
             //Get http client
             CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -319,6 +327,7 @@ public class RestAPITest {
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
         delete.setHeader("API-KEY", apiKey);
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -340,6 +349,7 @@ public class RestAPITest {
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
         delete.setHeader("API-KEY", apiKey);
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -360,6 +370,7 @@ public class RestAPITest {
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -380,6 +391,7 @@ public class RestAPITest {
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId);
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -400,6 +412,7 @@ public class RestAPITest {
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId+ "/fridge/1");
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -420,6 +433,7 @@ public class RestAPITest {
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId+ "/fridge/1/food/1");
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
+        get.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -440,6 +454,7 @@ public class RestAPITest {
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId+ "/fridge/1/food/tomato");
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -450,6 +465,7 @@ public class RestAPITest {
         // check that the house is created
         assertEquals(400, res.getStatusLine().getStatusCode(), "The creation has failed");
     }
+
 
     @Test
     @Order(8)
@@ -460,6 +476,7 @@ public class RestAPITest {
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId+ "/fridge/1");
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -468,11 +485,11 @@ public class RestAPITest {
         CloseableHttpResponse res = httpClient.execute(delete);
 
         // check that the house is created
-        assertEquals(400, res.getStatusLine().getStatusCode(), "The creation has failed");
+        assertEquals(400, res.getStatusLine().getStatusCode(), "The deletion has failed");
     }
 
     @Test
-    @Order(89)
+    @Order(9)
     @DisplayName("Deletion of unknown House")
     public void deleteUnknownHouse()
             throws IOException, ClassNotFoundException {
@@ -480,6 +497,7 @@ public class RestAPITest {
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
+        delete.setHeader("Authorization", "Basic " + basicAuth);
 
         //Get http client
         CloseableHttpClient httpClient = getCloseableHttpClient();
@@ -488,7 +506,7 @@ public class RestAPITest {
         CloseableHttpResponse res = httpClient.execute(delete);
 
         // check that the house is created
-        assertEquals(400, res.getStatusLine().getStatusCode(), "The creation has failed");
+        assertEquals(400, res.getStatusLine().getStatusCode(), "The deletion has failed");
     }
 
 
