@@ -27,10 +27,16 @@ public class CentralNode {
     public Response createHouse(House house) {
         Logger.getLogger("API").log(Level.INFO, "Creation of a house");
 
+        // Test if there is another house with the same address and ZIP
+        if (app.hasHouse(house)) {
+            return Response.status(400).entity("A house with the same address exists").build();
+        }
+
+        // Retrieve an ID and set id in House object
         int houseId = App.getNextId();
         house.setId(houseId);
         app.getHouses().put(houseId, house);
-        return Response.status(201).entity(house).build();
+        return Response.status(201).entity("{ \"id\":" + houseId+ "}").build();
     }
 
     @GET
