@@ -21,11 +21,12 @@ import java.util.logging.Logger;
 public class CentralNode {
 
     private final App app = App.getApp();
+    private Logger logger = Logger.getLogger("API");
 
     @POST
     @Path("/")
     public Response createHouse(House house) {
-        Logger.getLogger("API").log(Level.INFO, "Creation of a house");
+        logger.log(Level.INFO, "Entering creation of a house");
 
         // Test if there is another house with the same address and ZIP
         if (app.hasHouse(house)) {
@@ -42,12 +43,14 @@ public class CentralNode {
     @GET
     @Path("/")
     public Response getHouses() {
+        logger.log(Level.INFO, "Entering get all houses");
         return Response.status(200).entity(app.getHouses()).build();
     }
 
     @GET
     @Path("/{id}")
     public Response getHouse(@PathParam("id") Integer houseId) {
+        logger.log(Level.INFO, "Entering get house");
         if (app.hasHouse(houseId)) {
             House house = app.getHouse(houseId);
             return Response.status(200).entity(house).build();
@@ -59,6 +62,7 @@ public class CentralNode {
     @Path("/{id}")
     public Response deleteHouse(@PathParam("id") Integer houseId) {
         if (app.hasHouse(houseId)) {
+            System.out.println(app.getHouse(houseId).getFridges());
             if (! app.getHouse(houseId).getFridges().isEmpty()) {
                 logger.info("The house is not empty");
                 return Response.status(400).entity("The house is not empty").build();
@@ -73,14 +77,13 @@ public class CentralNode {
     @POST
     @Path("/{id}/fridge")
     public Response addFridge(@PathParam("id") Integer houseId, Fridge fridge) {
-        System.out.println(houseId);
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("Cannot create the fridge because the house does not exist").build();
 
         }
 
         House house = app.getHouse(houseId);
-        Logger.getLogger("API").log(Level.INFO, "Creation of a fridge");
+        logger.log(Level.INFO, "Creation of a fridge");
 
         // Test if a fridge with the same id exists
         if (house.hasFridge(fridge.getId())) {
@@ -88,7 +91,6 @@ public class CentralNode {
         }
 
         String apiKey = app.generateApiKey();
-        System.out.println(apiKey);
         fridge.setApiKey(apiKey);
 
         house.getFridges().add(fridge);
@@ -191,7 +193,7 @@ public class CentralNode {
             return Response.status(400).entity("The fridge does not have enough places for the food").build();
         }
 
-        Logger.getLogger("API").log(Level.INFO, "Creation of a food with id");
+        logger.log(Level.INFO, "Creation of a food with id");
         fridge.getFood().add(food);
         return Response.status(201).entity(food).build();
 
