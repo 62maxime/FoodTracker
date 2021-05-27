@@ -142,4 +142,112 @@ public class CentralNode {
     }
 
 
+    @POST
+    @Path("/{id}/fridge/{f_id}/food")
+    public Response addFood(@PathParam("id") Integer houseId,
+                            @PathParam("f_id") String fridgeId,
+                            Food food) {
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        // Check if food with the same name exists
+        if (fridge.getFood().stream().filter((f) -> f.getName().equals(food.getName())).findAny().isPresent()) {
+            return Response.status(400).entity("Food with the same name exists").build();
+
+        }
+
+        // Check the volume of the fridge
+        int currentVolume = fridge.getFood().stream().map(x -> x.getVolume()).reduce(0, (f, g) -> f + g);
+        if (currentVolume + food.getVolume() > fridge.getMaxVolume()) {
+            return Response.status(400).entity("The fridge does not have enough places for the food").build();
+        }
+
+        Logger.getLogger("API").log(Level.INFO, "Creation of a food with id");
+        fridge.getFood().add(food);
+        return Response.status(201).entity(food).build();
+
+    }
+
+    @GET
+    @Path("/{id}/fridge/{f_id}/food")
+    public Response getFood(@PathParam("id") Integer houseId,
+                            @PathParam("f_id") String fridgeId) {
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        return Response.status(201).entity(fridge.getFood()).build();
+
+    }
+
+    @GET
+    @Path("/{id}/fridge/{f_id}/food/{name}")
+    public Response getFoodByName(@PathParam("id") Integer houseId,
+                                  @PathParam("f_id") String fridgeId,
+                                  @PathParam("name") String foodName) {
+
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        if (!fridge.hasFood(foodName))
+            return Response.status(400).entity("The food does not exist").build();
+
+
+        Food food = fridge.getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
+        return Response.status(201).entity(food).build();
+
+    }
+
+    @DELETE
+    @Path("/{id}/fridge/{f_id}/food/{name}")
+    public Response deleteFoodByName(@PathParam("id") Integer houseId,
+                                     @PathParam("f_id") String fridgeId,
+                                     @PathParam("name") String foodName) {
+
+        if (!app.hasHouse(houseId)) {
+            return Response.status(400).entity("The house does not exist").build();
+
+        }
+        House house = app.getHouse(houseId);
+        if (!house.hasFridge(fridgeId)) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+
+        }
+        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        if (!fridge.hasFood(foodName))
+            return Response.status(400).entity("The food does not exist").build();
+
+
+        Food food = fridge.getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
+
+        fridge.getFood().remove(foodName);
+
+        return Response.status(201).entity(food).build();
+
+    }
+
 }
