@@ -53,7 +53,7 @@ API-KEY: VkNrYnpTRkl6Q3JIR25VTXp2cTlLWkZkSUxXZmlVbGk=
 ## Run
 1. Create keystore for SSL as **<CONFIG_PATH>/jetty.keystore** (The password must be **secret**)
     ```
-    keytool -genkey -alias jetty -keyalg RSA -keystore src/main/resources/jetty.keystore -storepass secret -keypass secret -dname "CN=localhost"
+    keytool -genkey -alias jetty -keyalg RSA -keystore <CONFIG_PATH>/jetty.keystore -storepass secret -keypass secret -dname "CN=localhost"
     ```
 2. Create a file with basic authentication in **<CONFIG_PATH>/credentials**
     ```
