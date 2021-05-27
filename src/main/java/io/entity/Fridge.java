@@ -15,6 +15,7 @@ public class Fridge implements Serializable {
     @Expose
     private final int maxVolume;
     private final List<Food> food;
+    private String apiKey;
 
     public Fridge() {
         this.id = "";
@@ -58,5 +59,13 @@ public class Fridge implements Serializable {
                 ", maxVolume=" + maxVolume +
                 ", food=" + food +
                 '}';
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 }

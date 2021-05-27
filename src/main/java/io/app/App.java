@@ -2,6 +2,8 @@ package io.app;
 
 import io.entity.House;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,4 +48,17 @@ public class App {
     public boolean hasHouse(House house) {
         return houses.containsValue(house);
     }
+
+    public String generateApiKey() {
+        final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 32; i++) {
+            int randomIndex = random.nextInt(chars.length());
+            sb.append(chars.charAt(randomIndex));
+        }
+        return Base64.getEncoder().encodeToString(sb.toString().getBytes());
+    }
+
+
 }

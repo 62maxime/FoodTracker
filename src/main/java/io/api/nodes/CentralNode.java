@@ -83,6 +83,10 @@ public class CentralNode {
             return Response.status(400).entity("A fridge with the same id exists").build();
         }
 
+        String apiKey = app.generateApiKey();
+        System.out.println(apiKey);
+        fridge.setApiKey(apiKey);
+
         house.getFridges().add(fridge);
         return Response.status(201).entity(fridge).build();
 
@@ -123,7 +127,8 @@ public class CentralNode {
     @DELETE
     @Path("/{id}/fridge/{f_id}")
     public Response deleteFridge(@PathParam("id") Integer houseId,
-                                 @PathParam("f_id") String fridgeId) {
+                                 @PathParam("f_id") String fridgeId,
+                                 @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey) {
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("The house does not exist").build();
 
@@ -134,6 +139,11 @@ public class CentralNode {
 
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        // Check that the APIKey is correct
+        if (! apiKey.equals(fridge.getApiKey())) {
+            return Response.status(403).entity("Access Denied").build();
+        }
 
         house.getFridges().remove(fridge);
 
@@ -146,6 +156,7 @@ public class CentralNode {
     @Path("/{id}/fridge/{f_id}/food")
     public Response addFood(@PathParam("id") Integer houseId,
                             @PathParam("f_id") String fridgeId,
+                            @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey,
                             Food food) {
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("The house does not exist").build();
@@ -157,6 +168,11 @@ public class CentralNode {
 
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        // Check that the APIKey is correct
+        if (! apiKey.equals(fridge.getApiKey())) {
+            return Response.status(403).entity("Access Denied").build();
+        }
 
         // Check if food with the same name exists
         if (fridge.getFood().stream().filter((f) -> f.getName().equals(food.getName())).findAny().isPresent()) {
@@ -179,7 +195,8 @@ public class CentralNode {
     @GET
     @Path("/{id}/fridge/{f_id}/food")
     public Response getFood(@PathParam("id") Integer houseId,
-                            @PathParam("f_id") String fridgeId) {
+                            @PathParam("f_id") String fridgeId,
+                            @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey) {
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("The house does not exist").build();
 
@@ -191,7 +208,12 @@ public class CentralNode {
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
-        return Response.status(201).entity(fridge.getFood()).build();
+        // Check that the APIKey is correct
+        if (! apiKey.equals(fridge.getApiKey())) {
+            return Response.status(403).entity("Access Denied").build();
+        }
+
+        return Response.status(200).entity(fridge.getFood()).build();
 
     }
 
@@ -199,6 +221,7 @@ public class CentralNode {
     @Path("/{id}/fridge/{f_id}/food/{name}")
     public Response getFoodByName(@PathParam("id") Integer houseId,
                                   @PathParam("f_id") String fridgeId,
+                                  @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey,
                                   @PathParam("name") String foodName) {
 
         if (!app.hasHouse(houseId)) {
@@ -211,6 +234,11 @@ public class CentralNode {
 
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        // Check that the APIKey is correct
+        if (! apiKey.equals(fridge.getApiKey())) {
+            return Response.status(403).entity("Access Denied").build();
+        }
 
         if (!fridge.hasFood(foodName))
             return Response.status(400).entity("The food does not exist").build();
@@ -225,6 +253,7 @@ public class CentralNode {
     @Path("/{id}/fridge/{f_id}/food/{name}")
     public Response deleteFoodByName(@PathParam("id") Integer houseId,
                                      @PathParam("f_id") String fridgeId,
+                                     @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey,
                                      @PathParam("name") String foodName) {
 
         if (!app.hasHouse(houseId)) {
@@ -237,6 +266,11 @@ public class CentralNode {
 
         }
         Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+
+        // Check that the APIKey is correct
+        if (! apiKey.equals(fridge.getApiKey())) {
+            return Response.status(403).entity("Access Denied").build();
+        }
 
         if (!fridge.hasFood(foodName))
             return Response.status(400).entity("The food does not exist").build();
