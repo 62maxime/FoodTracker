@@ -5,4 +5,6 @@ WORKDIR /opt/foodtracker
 
 COPY ./ /opt/foodtracker
 
-ENTRYPOINT [ "mvn", "clean", "install", "jetty:run"]
+RUN mvn clean install
+
+ENTRYPOINT [ "mvn", "jetty:run"]
