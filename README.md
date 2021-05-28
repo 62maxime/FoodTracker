@@ -44,8 +44,8 @@ API-KEY: VkNrYnpTRkl6Q3JIR25VTXp2cTlLWkZkSUxXZmlVbGk=
 |[/house/H_ID/fridge/FR_ID/food/FO_ID](documentation/food/get_food.md)|GET |  Retrieve the food FFID in the fridge id | ✓ 
 |[/house/H_ID/fridge/FR_ID/food/FO_ID](documentation/food/delete_food.md)|DELETE |  Delete food data | ✓ 
 
-## Installation
-1. Build the docker image
+## Build
+Build the docker image
     ```
     docker build -t  foodtracker .
     ```
@@ -59,7 +59,11 @@ API-KEY: VkNrYnpTRkl6Q3JIR25VTXp2cTlLWkZkSUxXZmlVbGk=
     ```
     default:password
     ```
-3. Start docker image
+3. Pull the image 
+   ```
+   docker pull docker.pkg.github.com/62maxime/foodtracker/foodtracker:<VERSION>
+   ```
+4. Start docker image
     ```
-    docker run --rm  -p 8443:8443 --volume <CONFIG_PATH>:/var/foodTracker/config --name foodtracker foodtracker:latest
+    docker run --rm  -p 8443:8443 --volume <CONFIG_PATH>:/var/foodTracker/config --name foodtracker docker.pkg.github.com/62maxime/foodtracker/foodtracker:<VERSION>
     ```
