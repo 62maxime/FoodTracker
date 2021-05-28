@@ -36,10 +36,6 @@ public class House implements Serializable {
         return fridges.stream().filter((f) -> f.getId().equals(id)).findAny().isPresent();
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
         return "House{" +
@@ -72,5 +68,9 @@ public class House implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

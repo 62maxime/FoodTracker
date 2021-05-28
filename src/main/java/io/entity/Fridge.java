@@ -61,11 +61,11 @@ public class Fridge implements Serializable {
                 '}';
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
     public String getApiKey() {
         return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

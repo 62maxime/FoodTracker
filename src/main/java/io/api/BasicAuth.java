@@ -4,7 +4,10 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Provider
@@ -22,13 +25,13 @@ public class BasicAuth implements ContainerRequestFilter {
             return;
         }
 
-        String[] tokens = (new String(Base64.getDecoder().decode(authHeader.split(" ")[1]), "UTF-8")).split(":");
+        String[] tokens = (new String(Base64.getDecoder().decode(authHeader.split(" ")[1]), StandardCharsets.UTF_8)).split(":");
         final String username = tokens[0];
         final String password = tokens[1];
 
         if (BasicAuth.username == null && BasicAuth.password == null) {
             String providedCredentials;
-            try(BufferedReader br = new BufferedReader(new FileReader(credentialsPath))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(credentialsPath))) {
                 StringBuilder sb = new StringBuilder();
                 String line = br.readLine();
 
@@ -43,12 +46,12 @@ public class BasicAuth implements ContainerRequestFilter {
                 return;
             }
 
-            String [] providedTokens = providedCredentials.split(":");
+            String[] providedTokens = providedCredentials.split(":");
             BasicAuth.username = providedTokens[0];
             BasicAuth.password = providedTokens[1];
         }
 
-        if ((! username.equals(BasicAuth.username)) || (!password.equals(BasicAuth.password))) {
+        if ((!username.equals(BasicAuth.username)) || (!password.equals(BasicAuth.password))) {
             requestContext.abortWith(Response.status(401).build());
             return;
         }
