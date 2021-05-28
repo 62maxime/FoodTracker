@@ -124,9 +124,13 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
-        return Response.status(200).entity(fridge).build();
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
+
+        return Response.status(200).entity(fridge.get()).build();
 
     }
 
@@ -145,16 +149,19 @@ public class CentralNode {
 
         }
 
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
 
         // Check that the APIKey is correct
-        if (! apiKey.equals(fridge.getApiKey())) {
+        if (!apiKey.equals(fridge.get().getApiKey())) {
             return Response.status(403).entity("Access Denied").build();
         }
 
-        house.getFridges().remove(fridge);
+        house.getFridges().remove(fridge.get());
 
-        return Response.status(200).entity(fridge).build();
+        return Response.status(200).entity(fridge.get()).build();
 
     }
 
@@ -174,27 +181,31 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
 
         // Check that the APIKey is correct
-        if (! apiKey.equals(fridge.getApiKey())) {
+        if (!apiKey.equals(fridge.get().getApiKey())) {
             return Response.status(403).entity("Access Denied").build();
         }
 
         // Check if food with the same name exists
-        if (fridge.getFood().stream().filter((f) -> f.getName().equals(food.getName())).findAny().isPresent()) {
+        if (fridge.get().getFood().stream().anyMatch((f) -> f.getName().equals(food.getName()))) {
             return Response.status(400).entity("Food with the same name exists").build();
 
         }
 
         // Check the volume of the fridge
-        int currentVolume = fridge.getFood().stream().map(x -> x.getVolume()).reduce(0, (f, g) -> f + g);
-        if (currentVolume + food.getVolume() > fridge.getMaxVolume()) {
+        int currentVolume = fridge.get().getFood().stream().map(Food::getVolume).reduce(0, Integer::sum);
+        if (currentVolume + food.getVolume() > fridge.get().getMaxVolume()) {
             return Response.status(400).entity("The fridge does not have enough places for the food").build();
         }
 
-        logger.log(Level.INFO, "Creation of a food with id");
-        fridge.getFood().add(food);
+        // Add the food to the fridge
+        fridge.get().getFood().add(food);
+
         return Response.status(201).entity(food).build();
 
     }
@@ -213,14 +224,17 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
 
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
         // Check that the APIKey is correct
-        if (! apiKey.equals(fridge.getApiKey())) {
+        if (!apiKey.equals(fridge.get().getApiKey())) {
             return Response.status(403).entity("Access Denied").build();
         }
 
-        return Response.status(200).entity(fridge.getFood()).build();
+        return Response.status(200).entity(fridge.get().getFood()).build();
 
     }
 
@@ -240,18 +254,21 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
-
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
         // Check that the APIKey is correct
-        if (! apiKey.equals(fridge.getApiKey())) {
+        if (!apiKey.equals(fridge.get().getApiKey())) {
             return Response.status(403).entity("Access Denied").build();
         }
 
-        if (!fridge.hasFood(foodName))
+        if (!fridge.get().hasFood(foodName)) {
             return Response.status(400).entity("The food does not exist").build();
+        }
 
+        Food food = fridge.get().getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
 
-        Food food = fridge.getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
         return Response.status(200).entity(food).build();
 
     }
@@ -272,20 +289,23 @@ public class CentralNode {
             return Response.status(400).entity("The Fridge does not exist in the house").build();
 
         }
-        Fridge fridge = house.getFridges().stream().filter((f) -> f.getId().equals(fridgeId)).findFirst().get();
-
+        Optional<Fridge> fridge = app.getFridge(house, fridgeId);
+        if (!fridge.isPresent()) {
+            return Response.status(400).entity("The Fridge does not exist in the house").build();
+        }
         // Check that the APIKey is correct
-        if (! apiKey.equals(fridge.getApiKey())) {
+        if (!apiKey.equals(fridge.get().getApiKey())) {
             return Response.status(403).entity("Access Denied").build();
         }
 
-        if (!fridge.hasFood(foodName))
+        if (!fridge.get().hasFood(foodName))
             return Response.status(400).entity("The food does not exist").build();
 
 
-        Food food = fridge.getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
+        Food food = fridge.get().getFood().stream().filter((f) -> f.getName().equals(foodName)).findFirst().get();
 
-        fridge.getFood().remove(foodName);
+        // Remove the food from the fridge
+        fridge.get().getFood().remove(food);
 
         return Response.status(200).entity(food).build();
 

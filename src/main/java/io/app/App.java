@@ -1,11 +1,13 @@
 package io.app;
 
+import io.entity.Fridge;
 import io.entity.House;
 
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class App {
 
@@ -58,6 +60,10 @@ public class App {
             sb.append(chars.charAt(randomIndex));
         }
         return Base64.getEncoder().encodeToString(sb.toString().getBytes());
+    }
+
+    public Optional<Fridge> getFridge(House house, String id) {
+        return house.getFridges().stream().filter((f) -> f.getId().equals(id)).findFirst();
     }
 
 
