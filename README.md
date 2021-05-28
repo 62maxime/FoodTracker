@@ -10,8 +10,11 @@
 - [ ] Return code standard
 
 ## API description
+### SSL
+The server is started using HTTPS only on the port 8443 (See below how to generate the keystore).
+
 ### Basic Authentication
-Call to methods with **Authentication required** set to YES must include in the header the username and  the password split by `:` encoded in base64.
+Call to methods with **Authentication required** set to YES must include in the header the username and the password split by `:` encoded in base64.
 
 Example:
 ```
