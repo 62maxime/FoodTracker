@@ -30,8 +30,8 @@ Create a house according to the provided json
     --header 'Authorization: Basic ZGVmYXVsdDpwYXNzd29yZA==' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "address": "tot",
-        "zip": "1236"
+        "address": "Rue des Fauvelles, Courbevoie",
+        "zip": "FR"
     }'
     ```
 * **Notes:**
