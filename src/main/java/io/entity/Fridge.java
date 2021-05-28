@@ -18,8 +18,8 @@ public class Fridge implements Serializable {
     private String apiKey;
 
     public Fridge() {
-        this.id = "";
-        this.state = SensorState.UNKNOWN;
+        this.id = null;
+        this.state = null;
         this.maxVolume = -1;
         this.food = new ArrayList<>();
     }

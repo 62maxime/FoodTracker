@@ -9,12 +9,12 @@ import java.util.Objects;
 
 public class House implements Serializable {
 
-    private int id;
     @Expose
     private final String address;
     @Expose
     private final String zip;
     private final List<Fridge> fridges;
+    private int id;
 
     public House(String address, String zip) {
         this.address = address;
@@ -23,8 +23,9 @@ public class House implements Serializable {
     }
 
     public House() {
-        this.address = "";
-        this.zip = "";
+        this.id = -1;
+        this.address = null;
+        this.zip = null;
         fridges = new ArrayList<>();
     }
 

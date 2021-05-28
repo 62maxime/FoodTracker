@@ -28,6 +28,11 @@ public class CentralNode {
     public Response createHouse(House house) {
         logger.log(Level.INFO, "Entering creation of a house");
 
+        // Check that we have all fields
+        if (house.getAddress() == null || house.getZip() == null) {
+            return Response.status(400).entity("Wrong parameter").build();
+        }
+
         // Test if there is another house with the same address and ZIP
         if (app.hasHouse(house)) {
             return Response.status(400).entity("A house with the same address exists").build();
@@ -77,6 +82,11 @@ public class CentralNode {
     @POST
     @Path("/{id}/fridge")
     public Response addFridge(@PathParam("id") Integer houseId, Fridge fridge) {
+        // Check that fridge has all fields
+        if (fridge.getId() == null || fridge.getMaxVolume() <= 0 || fridge.getState() == null) {
+            return Response.status(400).entity("Wrong parameter").build();
+        }
+
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("Cannot create the fridge because the house does not exist").build();
 
@@ -172,6 +182,11 @@ public class CentralNode {
                             @PathParam("f_id") String fridgeId,
                             @DefaultValue("NA") @HeaderParam("API-KEY") String apiKey,
                             Food food) {
+        // Check that food has all fields
+        if (food.getName() == null || food.getVolume() <= 0 || food.getExpireDate() == null) {
+            return Response.status(400).entity("Wrong parameter").build();
+        }
+
         if (!app.hasHouse(houseId)) {
             return Response.status(400).entity("The house does not exist").build();
 

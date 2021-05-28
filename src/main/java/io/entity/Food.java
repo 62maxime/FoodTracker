@@ -15,7 +15,7 @@ public class Food implements Serializable {
     private final Date expireDate;
 
     public Food() {
-        this.name = "NA";
+        this.name = null;
         this.volume = -1;
         this.expireDate = null;
     }
