@@ -15,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.TrustStrategy;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -23,30 +22,25 @@ import java.io.InputStreamReader;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RestAPITest {
 
+    public final static String basicAuth = "ZGVmYXVsdDpwYXNzd29yZA==";
     public static String houseId = "NA";
     public static String apiKey = "NA";
-    public final static String basicAuth = "ZGVmYXVsdDpwYXNzd29yZA==";
 
     public static CloseableHttpClient getCloseableHttpClient() {
         CloseableHttpClient httpClient = null;
         try {
             httpClient = HttpClients.custom().
                     setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).
-                    setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                        public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
-                            return true;
-                        }
-                    }).build()).build();
+                    setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, (arg0, arg1) -> true).build()).build();
         } catch (KeyManagementException e) {
             System.err.println("KeyManagementException in creating http client instance");
         } catch (NoSuchAlgorithmException e) {
@@ -61,7 +55,7 @@ public class RestAPITest {
     @Order(1)
     @DisplayName("Creation of a new house")
     public void createNewHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpPost post = new HttpPost("https://localhost:8443/house");
@@ -99,7 +93,7 @@ public class RestAPITest {
     @Order(2)
     @DisplayName("Retrieval of the house")
     public void retrieveNewHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId);
@@ -121,7 +115,6 @@ public class RestAPITest {
         House house;
         try (InputStreamReader streamReader = new InputStreamReader(res.getEntity().getContent())) {
             house = gson.fromJson(streamReader, House.class);
-            assertNotEquals("NA", house.getId());
             assertEquals("Defense", house.getAddress());
             assertEquals("FR", house.getZip());
         }
@@ -132,7 +125,7 @@ public class RestAPITest {
     @Order(2)
     @DisplayName("Creation of a fridge")
     public void createFridge()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpPost post = new HttpPost("https://localhost:8443/house/" + houseId + "/fridge");
@@ -171,7 +164,7 @@ public class RestAPITest {
     @Order(3)
     @DisplayName("Retrieve the fridge")
     public void retrieveFridge()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId + "/fridge/1");
@@ -205,7 +198,7 @@ public class RestAPITest {
     @Order(3)
     @DisplayName("Creation of a food")
     public void createFood()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpPost post = new HttpPost("https://localhost:8443/house/" + houseId + "/fridge/1/food");
@@ -248,7 +241,7 @@ public class RestAPITest {
     @Order(4)
     @DisplayName("Retrieval of food")
     public void retrieveFood()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         // Given
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId + "/fridge/1/food/tomato");
@@ -284,12 +277,12 @@ public class RestAPITest {
     @Order(5)
     @DisplayName("Exceed fridge volume")
     public void exceedFridgeSize()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         for (int i = 0; i < 10; i++) {
             // Given
             HttpPost post = new HttpPost("https://localhost:8443/house/" + houseId + "/fridge/1/food");
             String json = "{\n" +
-                    "    \"name\": \"tomato" + i +"\",\n" +
+                    "    \"name\": \"tomato" + i + "\",\n" +
                     "    \"volume\": 1,\n" +
                     "    \"expireDate\": \"2021-05-30\"\n" +
                     "}";
@@ -321,7 +314,7 @@ public class RestAPITest {
     @Order(6)
     @DisplayName("Deletion of Food")
     public void deleteFood()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId + "/fridge/1/food/tomato");
         delete.setHeader("Accept", "application/json");
@@ -343,7 +336,7 @@ public class RestAPITest {
     @Order(7)
     @DisplayName("Deletion of Fridge")
     public void deleteFridge()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId + "/fridge/1");
         delete.setHeader("Accept", "application/json");
@@ -365,7 +358,7 @@ public class RestAPITest {
     @Order(8)
     @DisplayName("Deletion of House")
     public void deleteHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
         delete.setHeader("Accept", "application/json");
@@ -386,7 +379,7 @@ public class RestAPITest {
     @Order(9)
     @DisplayName("Retrieval of unknown House")
     public void retrieveUnknownHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId);
         get.setHeader("Accept", "application/json");
@@ -407,9 +400,9 @@ public class RestAPITest {
     @Order(8)
     @DisplayName("Retrieval of unknown Fridge")
     public void retrieveUnknownFridge()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
-        HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId+ "/fridge/1");
+        HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId + "/fridge/1");
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
         get.setHeader("Authorization", "Basic " + basicAuth);
@@ -428,9 +421,9 @@ public class RestAPITest {
     @Order(7)
     @DisplayName("Retrieval of unknown Food")
     public void retrieveUnknownFood()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
-        HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId+ "/fridge/1/food/1");
+        HttpGet get = new HttpGet("https://localhost:8443/house/" + houseId + "/fridge/1/food/1");
         get.setHeader("Accept", "application/json");
         get.setHeader("Content-type", "application/json");
         get.setHeader("Authorization", "Basic " + basicAuth);
@@ -449,9 +442,9 @@ public class RestAPITest {
     @Order(7)
     @DisplayName("Deletion of unknown Food")
     public void deleteUnknownFood()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
-        HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId+ "/fridge/1/food/tomato");
+        HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId + "/fridge/1/food/tomato");
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
         delete.setHeader("Authorization", "Basic " + basicAuth);
@@ -470,7 +463,7 @@ public class RestAPITest {
     @Order(6)
     @DisplayName("Deletion of not empty House")
     public void deleteNotEmptyHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
         delete.setHeader("Accept", "application/json");
@@ -491,9 +484,9 @@ public class RestAPITest {
     @Order(8)
     @DisplayName("Deletion of unknown Fridge")
     public void deleteUnknownFridge()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
-        HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId+ "/fridge/1");
+        HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId + "/fridge/1");
         delete.setHeader("Accept", "application/json");
         delete.setHeader("Content-type", "application/json");
         delete.setHeader("Authorization", "Basic " + basicAuth);
@@ -512,7 +505,7 @@ public class RestAPITest {
     @Order(9)
     @DisplayName("Deletion of unknown House")
     public void deleteUnknownHouse()
-            throws IOException, ClassNotFoundException {
+            throws IOException {
         // Given
         HttpDelete delete = new HttpDelete("https://localhost:8443/house/" + houseId);
         delete.setHeader("Accept", "application/json");
@@ -528,7 +521,6 @@ public class RestAPITest {
         // check that the house is created
         assertEquals(400, res.getStatusLine().getStatusCode(), "The deletion has failed");
     }
-
 
 
 }
